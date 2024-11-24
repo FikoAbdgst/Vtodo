@@ -4,7 +4,7 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Start from './pages/start/Start';
 import Register from './pages/register/Register';
 import Login from './pages/login/Login';
-import Home from './pages/Home';
+import Home from './pages/home/Home';
 import ForgotCheckEmail from './pages/forgot/ForgotCheckEmail';
 import ForgotCheckName from './pages/forgot/ForgotCheckName';
 import ForgotCheckPassword from './pages/forgot/ForgotCheckPassword';

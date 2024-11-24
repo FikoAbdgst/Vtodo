@@ -1,18 +1,33 @@
 const jwt = require('jsonwebtoken');
 
 const authMiddleware = (req, res, next) => {
-    const token = req.header('Authorization')?.split(' ')[1]; // Expecting token in "Bearer TOKEN"
-
-    if (!token) {
-        return res.status(401).send('Access denied. No token provided.');
-    }
-
     try {
-        const decoded = jwt.verify(token, 'your_secret_key'); // Verifikasi token dengan secret key
-        req.user = decoded; // Set user yang terverifikasi ke req
+        const authHeader = req.header('Authorization');
+
+        if (!authHeader) {
+            return res.status(401).json({
+                success: false,
+                message: 'Access denied. No token provided.'
+            });
+        }
+
+        const token = authHeader.split(' ')[1];
+
+        if (!token) {
+            return res.status(401).json({
+                success: false,
+                message: 'Access denied. Invalid token format.'
+            });
+        }
+
+        const decoded = jwt.verify(token, 'your_secret_key');
+        req.user = decoded;
         next();
     } catch (err) {
-        res.status(400).send('Invalid token');
+        return res.status(401).json({
+            success: false,
+            message: 'Invalid token: ' + err.message
+        });
     }
 };
 

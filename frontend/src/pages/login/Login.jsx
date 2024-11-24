@@ -16,25 +16,34 @@ const Login = () => {
     const handleLogin = async (e) => {
         e.preventDefault();
         try {
-            const response = await axios.post('http://localhost:3000/auth/login', { email, password });
+            const response = await axios.post('http://localhost:3000/auth/login', {
+                email,
+                password
+            });
+
+            // Store token in localStorage
             localStorage.setItem('token', response.data.token);
-            toast.success('Login successfully');
+
+            // Store user info
+            const { name: named, email: emailed } = response.data.user;
+            localStorage.setItem('loggedIn', JSON.stringify({ named, emailed }));
+
+            // Show success message
+            toast.success('Login successful');
+
+            // Navigate to home page
             setTimeout(() => {
-                navigate('/dashboard');
+                navigate('/home');
             }, 2000);
+
         } catch (err) {
-            // Set the error message based on the response from the server
-            if (err.response && err.response.data) {
-                toast.error(err.response.data);  // Display error message from the API
-            } else {
-                toast.error('Something went wrong. Please try again later.');
-            }
+            toast.error(err.response?.data?.message || 'Login failed');
         }
     };
     return (
         <>
             <Toaster />
-            <div className='w-full h-screen flex'>
+            <div className='w-full h-screen flex bg-amber'>
                 <div className='w-1/2 flex justify-center flex-col ml-32'>
                     <p className='thinrobotofont text-6xl'>Welcome To</p>
                     <div className='flex'>

@@ -12,15 +12,18 @@ const prisma = new PrismaClient();
 const auth = require('./routes/auth')(prisma);
 const tasks = require('./routes/tasks')(prisma);
 const forgots = require('./routes/forgot')(prisma);
-
+const categories = require('./routes/category')(prisma);
 
 app.get('/', (req, res) => {
     res.send('Hello HAHAHAHA');
 });
 
+
+
 app.use('/auth', auth); // Add auth route for login/register
 app.use('/tasks', tasks);
 app.use('/forgot', forgots);
+app.use('/category', categories);
 
 app.listen(port, () => {
     console.log('Server running on port 3000');

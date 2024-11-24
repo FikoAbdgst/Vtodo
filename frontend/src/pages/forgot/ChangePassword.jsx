@@ -68,8 +68,11 @@ const ChangePassword = () => {
 
     };
 
-    const getBorderColor = (strength) => {
-        switch (strength) {
+    const getBorderColor = (password) => {
+        if (password === '') {
+            return 'border-zinc-200'; // Default border color for empty input
+        }
+        switch (getPasswordStrength(password)) {
             case 'normal':
                 return 'border-orange-500 text-orange-500';
             case 'strong':
@@ -91,8 +94,8 @@ const ChangePassword = () => {
                 <div className="flex justify-center">
                     <img src={NamePagePict} className="w-72 h-64" alt="Change Password" />
                 </div>
-                <form className="w-3/5 flex justify-center items-center flex-col" onSubmit={handleChangePassword}>
-                    <div className={`bg-zinc-200 w-3/5 rounded-lg pl-6 shadow-md flex justify-between items-center relative border-2 ${getBorderColor(passwordStrength)} ${errorPassword ? 'border-red-600' : ''}`}>
+                <form className="w-3/5 flex justify-center items-center flex-col gap-5   " onSubmit={handleChangePassword}>
+                    <div className={`bg-zinc-200 w-3/5 rounded-lg pl-6 shadow-md flex justify-between items-center relative border-2 ${getBorderColor(newPassword)} ${errorPassword ? 'border-red-600' : ''}`}>
                         <div className="w-11/12 flex items-center">
                             <FontAwesomeIcon icon={faLock} className="text-zinc-400" />
                             <input
@@ -113,7 +116,7 @@ const ChangePassword = () => {
                             {errorPassword}
                         </p>
                     )}
-                    <div className={`bg-zinc-200 w-3/5 rounded-lg pl-6 shadow-md flex justify-between items-center relative border-2 ${errorConfPassword ? 'border-red-600' : 'border-none'} ${errorPassword ? 'mt-2' : 'mt-8'}`}>
+                    <div className={`bg-zinc-200 w-3/5 rounded-lg pl-6 shadow-md flex justify-between items-center relative border-2 ${errorConfPassword ? 'border-red-600' : 'border-none'}`}>
                         <div className="w-11/12 flex items-center">
                             <FontAwesomeIcon icon={faLockOpen} className="text-zinc-400" />
                             <input

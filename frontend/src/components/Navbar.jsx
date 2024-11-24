@@ -1,22 +1,32 @@
-import { faCalendar, faCircle, faDoorOpen, faHome, faList, faMugHot, faUserCircle } from '@fortawesome/free-solid-svg-icons'
+import { faArrowRightFromBracket, faCalendar, faCircle, faDoorOpen, faHome, faList, faMugHot, faUserCircle } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import React, { useEffect } from 'react'
 import vite from '../../public/vite.svg'
 import Ed from '../../public/ed.jpeg'
 import { Link, useLocation } from 'react-router-dom'
 
-const Navbar = ({ name, email }) => {
+const Navbar = ({ name, email, setShowNewActivityForm }) => {
 
     const location = useLocation();
 
+    // Reset `setShowNewActivityForm` setiap kali path berubah
+    useEffect(() => {
+        setShowNewActivityForm(false); // Properti ini digunakan di sini
+        localStorage.removeItem("showNewActivityForm");
+    }, [location.pathname]);
 
-
+    // Fungsi logout
     const handleLogout = () => {
-        localStorage.removeItem('loggedIn');
-        window.location.href = '/login'
-    }
+        window.location.href = "/login";
+        localStorage.removeItem("loggedIn");
+        localStorage.removeItem("showNewActivityForm");
+        localStorage.removeItem("token");
+        setShowNewActivityForm(false);
+    };
 
+    // Fungsi untuk menentukan apakah path saat ini aktif
     const isActive = (path) => location.pathname === path;
+
 
     return (
         <div className='w-1/4 h-full flex items-center flex-col'>
@@ -60,6 +70,7 @@ const Navbar = ({ name, email }) => {
                     <FontAwesomeIcon icon={faDoorOpen} />
                     <p>Logout</p>
                 </button>
+
             </div>
         </div>
     )

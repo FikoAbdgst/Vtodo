@@ -53,25 +53,55 @@ module.exports = (prisma) => {
         try {
             const { email, password } = req.body;
 
-            // Find user by email
-            const user = await prisma.user.findUnique({ where: { email } });
+            // 1. Find user by email
+            const user = await prisma.user.findUnique({
+                where: { email }
+            });
+
+            // 2. Check if user exists
             if (!user) {
-                return res.status(400).send('Email Tidak ditemukan');
+                return res.status(401).json({
+                    success: false,
+                    message: 'Invalid email or password'
+                });
             }
 
-            // Compare password
-            const isMatch = await bcrypt.compare(password, user.password);
-            if (!isMatch) {
-                return res.status(400).send('Password Salah');
+            // 3. Verify password (assuming you're using bcrypt)
+            const validPassword = await bcrypt.compare(password, user.password);
+            if (!validPassword) {
+                return res.status(401).json({
+                    success: false,
+                    message: 'Invalid email or password'
+                });
             }
 
-            // Generate JWT token
-            const token = jwt.sign({ userId: user.id }, SECRET_KEY, { expiresIn: '1h' });
+            // 4. Create JWT token
+            const token = jwt.sign(
+                {
+                    userId: user.id,
+                    email: user.email
+                },
+                'your_secret_key',
+                { expiresIn: '24h' }
+            );
 
-            res.json({ message: 'Login successful', token });
+            // 5. Send success response
+            res.json({
+                success: true,
+                token,
+                user: {
+                    id: user.id,
+                    name: user.name,
+                    email: user.email
+                }
+            });
+
         } catch (err) {
-            console.error('Error logging in:', err);
-            res.status(500).send('Error logging in');
+            // 6. Handle errors
+            res.status(500).json({
+                success: false,
+                message: 'Login Eror!'
+            });
         }
     });
 
